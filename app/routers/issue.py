@@ -10,7 +10,7 @@ router = APIRouter(prefix="/posts", tags=['Issues'])
 def get_issues(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), 
                limit: int = 10, skip: int = 0, search: Optional[str] = ""): 
     
-    issues = db.query(models.Issue).limit(limit).offset(skip).filter(models.Issue.issue.contains(search)).all()
+    issues = db.query(models.Issue).filter(models.Issue.issue.contains(search)).limit(limit).offset(skip).all()
     return issues  
 
 

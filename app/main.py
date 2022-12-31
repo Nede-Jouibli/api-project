@@ -7,7 +7,7 @@ from .routers import issue, citizen, auth
 from .config import settings
 
 #building tables of DB
-models.Base.metadata.create_all(bind=engine)
+#models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
