@@ -12,19 +12,17 @@ SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
-def create_access_token(data:dict):
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
-
-    expire_time = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # Convert the expiration time to a string
-    expiration_str = expire_time.strftime("%Y-%m-%d %H:%M:%S")
-    # Update the expiration time in the to_encode dictionary
-    to_encode.update({"expiration": expiration_str})
-
-    #payload + sig: secret key(api) + alg
-    encoded_jwt= jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=10)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
+    
 def verify_access_token(token: str, info_exception):
     try: 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -39,10 +37,32 @@ def verify_access_token(token: str, info_exception):
 
     return token_data
 
-def get_current_user(token: str = Depends(oauth2_scheme), db : Session = Depends(database.get_db)):   
+def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(days=7)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def get_current_citizen(token: str = Depends(oauth2_scheme), db : Session = Depends(database.get_db)):   
     info_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                   detail=f"could not validate logging info", headers={"WWW-Authenticate": "Bearer"})
+                                   detail=f"could not validate logging info.", 
+                                   headers={"WWW-Authenticate": "Bearer"})
     
     token = verify_access_token(token, info_exception)
-    user = db.query(models.Citizen).filter(models.Citizen.id == token.id).first()
-    return user
+    citizen = db.query(models.Citizen).filter(models.Citizen.id == token.id).first()
+    return citizen
+
+
+def get_current_dm(token: str = Depends(oauth2_scheme), db : Session = Depends(database.get_db)):   
+    info_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                   detail=f"could not validate logging info.", 
+                                   headers={"WWW-Authenticate": "Bearer"})
+    
+    token = verify_access_token(token, info_exception)
+    dm = db.query(models.DecisionMaker).filter(models.DecisionMaker.id == token.id).first()
+    return dm

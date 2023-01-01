@@ -22,18 +22,3 @@ def get_db(): #dependency: get a session to db
     finally:
         db.close()
 
-
-# #connection to DB, no need for this though
-# while True:
-#     try: 
-#         conn = psycopg2.connect(host='localhost', database='app', user='postgres', 
-#         password='admin', cursor_factory=RealDictCursor)
-#         cursor=conn.cursor() #used to execute SQL statements
-#         print("Database connection was successful!")
-
-#         break
-
-#     except Exception as error: 
-#         print("Connection Failed.")
-#         print("Error", error)
-#         time.sleep(3)
