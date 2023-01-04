@@ -99,12 +99,25 @@ class FocusResponse(FocusBase):
         orm_mode =True    
 
 
-################## Token ################# 
+################## Tokens ################# 
 class Token (BaseModel):
     access_token: str
     refresh_token: str
-    token_type: str    
+    token_type: str 
+
+
+class NewToken (BaseModel): 
+    new_access_token: str       
     
 class TokenData (BaseModel):
     id: Optional [str] = None
 
+class AuthJWT(BaseModel):
+    access:str
+
+class Authorize:
+    def __init__(self,jwt:AuthJWT):
+        self.jwt=jwt
+    
+    def jwt_refresh_token_required(self):
+        return True

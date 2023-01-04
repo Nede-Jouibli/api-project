@@ -1,7 +1,10 @@
-from .. import models, schemas, utils
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from .. import models, schemas, utils, oauth2
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter, Request
 from sqlalchemy.orm import Session
 from ..database import get_db
+from fastapi.responses import HTMLResponse
+import hashlib
+from datetime import datetime
 
 router = APIRouter(prefix="/citizens", tags=['Citizens'])
 
@@ -27,3 +30,24 @@ def get_citizen(id: int,  db: Session = Depends(get_db),):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Citizen with id: {id} does not exist")
     return citizen                         
+
+
+# #verification
+# @router.get('/verification', response_model=HTMLResponse)
+# async def citizen_email_verification(request: Request, token: str):
+#     citizen = await oauth2.verify_access_token(token)
+
+# @router.get('/verifyemail/{token}')
+# def verify_me(token: str):
+#     hashedCode = hashlib.sha256()
+#     hashedCode.update(bytes.fromhex(token))
+#     verification_code = hashedCode.hexdigest()
+#     # result = User.find_one_and_update({"verification_code": verification_code}, {
+#     #     "$set": {"verification_code": None, "verified": True, "updated_at": datetime.utcnow()}}, new=True)
+#     # if not result:
+#     #     raise HTTPException(
+#     #         status_code=status.HTTP_403_FORBIDDEN, detail='Invalid verification code or account already verified')
+#     return {
+#         "status": "success",
+#         "message": "Account verified successfully"
+#     }
