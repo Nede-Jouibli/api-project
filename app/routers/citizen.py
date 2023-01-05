@@ -1,10 +1,8 @@
-from .. import models, schemas, utils, oauth2
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter, Request
+from .. import models, schemas, utils
+from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from ..database import get_db
-from fastapi.responses import HTMLResponse
-import hashlib
-from datetime import datetime
+
 
 router = APIRouter(prefix="/citizens", tags=['Citizens'])
 
