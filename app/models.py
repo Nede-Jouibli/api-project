@@ -19,7 +19,7 @@ class Issue(Base): #extends Base model of sql alchemy
     
     citizen = relationship("Citizen")
 
-class Citizen(Base): #extends Base model of sql alchemy
+class Citizen(Base): 
     __tablename__="citizens"
 
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
@@ -38,7 +38,7 @@ class DecisionMaker(Base):
     authority=Column(String, nullable=False)
     created_at=Column(TIMESTAMP(timezone=True),server_default=text('now()'), nullable=False)
 
-class Focus(Base): #extends Base model of sql alchemy
+class Focus(Base): 
     __tablename__="focus_issues"
 
     id = Column(Integer, primary_key=True, nullable=False)

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from typing import List, Optional
 
-router = APIRouter(prefix="/issues", tags=['Issues'])
+router = APIRouter(prefix="/issue", tags=['Issues'])
 
 @router.get("/", response_model=List[schemas.IssueResponse])
 def get_issues(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_citizen), 

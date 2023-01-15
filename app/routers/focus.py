@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from typing import List, Optional
 
-router = APIRouter(prefix="/focus_issues", tags=['Focus Issues'])
+router = APIRouter(prefix="/focus_issue", tags=['Focus Issues'])
 
 @router.get("/", response_model=List[schemas.FocusResponse])
 def get_focus_issue(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_dm), 

@@ -9,8 +9,7 @@ import jwt
 router = APIRouter(tags=['Authentication']) 
 
 
-#login of citizens
-@router.post('/citizens/login', response_model=schemas.Token)
+@router.post('/citizen/login', response_model=schemas.Token)
 def citizen_login(info: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     
     citizen = db.query(models.Citizen).filter(models.Citizen.email==info.username).first()
@@ -28,8 +27,7 @@ def citizen_login(info: OAuth2PasswordRequestForm = Depends(), db: Session = Dep
 
 
 
-#login of decision makers
-@router.post('/decisionmakers/login', response_model=schemas.Token)
+@router.post('/decisionmaker/login', response_model=schemas.Token)
 def decisionmaker_login(info: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     
     decisionmaker = db.query(models.DecisionMaker).filter(models.DecisionMaker.email==info.username).first()

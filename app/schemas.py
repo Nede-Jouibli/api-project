@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr #structure posts
+from pydantic import BaseModel, EmailStr 
 from datetime import datetime
 from typing import Optional
 
@@ -35,8 +35,11 @@ class CitizenLogin(BaseModel):
     email: EmailStr
     password: str 
 
+class CitizenExist(BaseModel):
+    message: str
 
-class IssueResponse(IssueBase): #change this (postresponse)
+
+class IssueResponse(IssueBase): 
     id: int
     created_at: datetime
     citizen_id: int
@@ -62,6 +65,10 @@ class CreateDM(BaseModel):
     password: str   
     organization: str     
     authority: str    
+
+class DMExist(BaseModel):
+    message: str
+
 
 class DMInfo(BaseModel):
     id: int

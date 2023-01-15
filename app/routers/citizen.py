@@ -4,21 +4,27 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 
 
-router = APIRouter(prefix="/citizens", tags=['Citizens'])
+router = APIRouter(prefix="/citizen", tags=['Citizens'])
 
-@router.post("/", status_code=status.HTTP_201_CREATED,  response_model=schemas.CitizenInfo)
+@router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=schemas.CitizenExist|schemas.CitizenInfo)
 def create_citizen(citizen: schemas.CreateCitizen, db: Session = Depends(get_db)):
+
+    existing_citizen = db.query(models.Citizen).filter(models.Citizen.email == citizen.email).first()
+
+    if existing_citizen:
+        return {"message": "Citizen with this email already exists, please try to log in instead."}
     
-    #hash the password
-    hashed_pwd=utils.hash(citizen.password)
-    citizen.password= hashed_pwd
+    else: 
+        hashed_pwd=utils.hash(citizen.password)
+        citizen.password= hashed_pwd
 
-    new_citizen = models.Citizen(**citizen.dict())
-    db.add(new_citizen)
-    db.commit()
-    db.refresh(new_citizen)
+        new_citizen = models.Citizen(**citizen.dict())
+        db.add(new_citizen)
+        db.commit()
+        db.refresh(new_citizen)
 
-    return new_citizen
+        return new_citizen
+
 
 @router.get('/{id}', response_model=schemas.CitizenInfo)
 def get_citizen(id: int,  db: Session = Depends(get_db),):
